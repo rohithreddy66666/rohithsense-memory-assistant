@@ -1,12 +1,13 @@
-# rohithsense-memory-assistant
-RohithSense: An intelligent AI memory assistant built with OpenVINO™ that remembers conversation context, tracks user interactions over time, and provides personalized responses based on conversation history. Featuring speech recognition, context-aware dialogue, and conversation summarization capabilities.
-# rohithsense-memory-assistant
+# RohithSense Memory Assistant
 
 🧠 **An Intelligent Context-Aware Memory Assistant built with OpenVINO™ Toolkit**
 
 [![Apache License Version 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 
 RohithSense is a specialized AI memory assistant designed to engage in natural conversations while tracking user interactions and recalling past topics to provide more contextually relevant responses. Built on the foundation of OpenVINO™ and state-of-the-art language models, this application offers a seamless voice-activated interface that developers can easily integrate and deploy.
+
+## Credits
+This project is inspired by and builds upon the [Custom AI Assistant](https://github.com/openvinotoolkit/openvino_build_deploy/tree/master/ai_ref_kits/custom_ai_assistant) from the OpenVINO™ toolkit, extending it with memory-focused capabilities and conversation tracking features.
 
 > **Repository Description**: RohithSense: An intelligent AI memory assistant built with OpenVINO™ that remembers conversation context, tracks user interactions over time, and provides personalized responses based on conversation history. Featuring speech recognition, context-aware dialogue, and conversation summarization capabilities.
 
@@ -44,7 +45,7 @@ sudo apt install git gcc python3-venv python3-dev
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_REPOSITORY/rohithsense-memory-assistant.git
+git clone https://github.com/rohithreddy66666/rohithsense-memory-assistant.git
 cd rohithsense-memory-assistant
 ```
 
@@ -59,7 +60,13 @@ source venv/bin/activate   # For Unix-based systems (Linux/macOS)
 #### 3. Install Required Packages
 
 ```bash
-python -m pip install --upgrade pip 
+# Upgrade pip and install essential tools
+python -m pip install --upgrade pip setuptools wheel
+
+# Install the OpenVINO GenAI package
+pip install openvino-genai==2024.6.0
+
+# Install other requirements
 pip install -r requirements.txt
 ```
 
@@ -76,6 +83,10 @@ pip install -r requirements.txt
      huggingface-cli login
      ```
      (When prompted to add the token as a git credential, respond with 'n')
+   - You can optionally verify connectivity with:
+     ```bash
+     ping huggingface.co
+     ```
 
 ### Model Conversion and Optimization
 
@@ -83,14 +94,14 @@ pip install -r requirements.txt
 
 #### 1. Convert Automatic Speech Recognition (ASR) Model
 
-For CPU (INT8 precision):
 ```bash
-python convert_and_optimize_asr.py --asr_model_type distil-whisper-large-v3 --precision int8
+# Convert ASR model (INT8 precision for CPU)
+python convert_and_optimize_asr.py --asr_model_type distil-whisper-large-v3 --precision int8 --model_dir converted_models
 ```
 
 For GPU (FP16 precision):
 ```bash
-python convert_and_optimize_asr.py --asr_model_type distil-whisper-large-v3
+python convert_and_optimize_asr.py --asr_model_type distil-whisper-large-v3 --model_dir converted_models
 ```
 
 > **⚠️ Warning**: Windows users may see a "Permission Error" message due to an export function bug. The model will export successfully, but you may need to clear the temp directory manually.
@@ -107,25 +118,22 @@ For desktop/server processors:
 python convert_and_optimize_chat.py --chat_model_type llama3.1-8B --precision int4
 ```
 
-For AI PC or edge devices:
-```bash
-python convert_and_optimize_chat.py --chat_model_type llama3.2-3B --precision int4
-```
-
-For Chinese language support:
-```bash
-python convert_and_optimize_chat.py --chat_model_type qwen2-7B --precision int4
-```
-
 ### Running RohithSense
 
 > **NOTE**: This application requires substantial memory (>16GB) due to the size of the models, especially the chatbot.
 
 ```bash
-python app.py --asr_model_dir path/to/asr_model --chat_model_dir path/to/chat_model
+# Run with relative paths
+python app.py --asr_model_dir "converted_models/distil-whisper-large-v3-INT8" --chat_model_dir "models/llama3.1-8B-INT4" --public
 ```
 
-Add `--public` flag to make it publicly accessible.
+Alternatively, you can use absolute paths:
+```bash
+# Example with absolute paths (Windows format)
+python app.py --asr_model_dir "D:\openvino\openvino_build_deploy\ai_ref_kits\custom_ai_assistant\converted_models\distil-whisper-large-v3-INT8" --chat_model_dir "D:\openvino\openvino_build_deploy\ai_ref_kits\custom_ai_assistant\models\llama3.1-8B-INT4"
+```
+
+The `--public` flag makes the interface accessible from other devices on your network.
 
 ### Accessing the Web Interface
 
