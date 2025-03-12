@@ -26,3 +26,4 @@ if __name__ == '__main__':
     parser.add_argument('--public', default=False, action="store_true", help="Whether interface should be available publicly")
 
     main(parser.parse_args())
+#testing something
